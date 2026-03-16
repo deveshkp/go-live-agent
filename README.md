@@ -80,14 +80,14 @@ pnpm dev
 ```mermaid
 graph TD
     subgraph "User Environment"
-        Browser[User Browser <br/>(React Application)]
+        Browser["User Browser <br/>(React Application)"]
         Microphone
         Camera
-        LocalStorage[(Local Storage <br/> API Key)]
+        LocalStorage[("Local Storage <br/> API Key")]
     end
 
     subgraph "Google Cloud Platform"
-        CloudRun[Cloud Run Service <br/> (Node.js/Express)]
+        CloudRun["Cloud Run Service <br/> (Node.js/Express)"]
     end
 
     subgraph "Google AI Services"
@@ -101,12 +101,12 @@ graph TD
     Browser -->|3. Retrieve stored API Key| LocalStorage
     Browser -->|4. Establish WebSocket| GeminiAPI
     
-    Microphone -->|Capture PCM Audio (16kHz)| Browser
-    Camera -->|Capture Video Frames (JPEG)| Browser
+    Microphone -->|Capture PCM Audio 16kHz| Browser
+    Camera -->|Capture Video Frames JPEG| Browser
     
     Browser -->|5. Stream Audio/Video| GeminiAPI
     GeminiAPI -.->|Process Multimodal Input| GeminiModel
-    GeminiAPI -->|6. Stream Audio Response (24kHz)| Browser
+    GeminiAPI -->|6. Stream Audio Response 24kHz| Browser
 ```
 
 ### 🔄 Interaction Flow
