@@ -1,0 +1,46 @@
+# This file specifies files that gcloud should NOT upload to Google Cloud
+# when running `gcloud builds submit`
+
+# Git
+.git
+.gitignore
+
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-error.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build artifacts
+dist
+build
+.next
+out
+
+# Manus-specific
+.manus-logs
+screenshots
+page_texts
+console_outputs
+
+# Testing
+coverage
+.nyc_output
+
+# Temporary
+tmp
+temp
+*.tmp

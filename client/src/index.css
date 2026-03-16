@@ -1,0 +1,342 @@
+/* 
+ * Go-live — Cyberpunk Diagnostic Terminal Design System
+ * Design Movement: Cyberpunk AR HUD / Diagnostic Terminal
+ * Color Philosophy: Near-black base with electric cyan + neon green accents
+ * Typography: Space Grotesk (display) + JetBrains Mono (terminal/data)
+ * Layout: Full-screen camera feed as base, floating HUD panels
+ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  
+  /* Custom cyberpunk colors */
+  --color-cyan-glow: #00e5ff;
+  --color-neon-green: #39ff14;
+  --color-amber-warn: #ff9800;
+  --color-danger-red: #ff1744;
+  --color-hud-bg: rgba(0, 0, 0, 0.65);
+  --color-hud-border: rgba(0, 229, 255, 0.4);
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(0.08 0.01 220);
+  --foreground: oklch(0.95 0.02 200);
+  --card: oklch(0.12 0.015 220);
+  --card-foreground: oklch(0.95 0.02 200);
+  --popover: oklch(0.12 0.015 220);
+  --popover-foreground: oklch(0.95 0.02 200);
+  --primary: oklch(0.78 0.18 200);
+  --primary-foreground: oklch(0.08 0.01 220);
+  --secondary: oklch(0.18 0.02 220);
+  --secondary-foreground: oklch(0.85 0.02 200);
+  --muted: oklch(0.15 0.01 220);
+  --muted-foreground: oklch(0.55 0.03 200);
+  --accent: oklch(0.78 0.18 200);
+  --accent-foreground: oklch(0.08 0.01 220);
+  --destructive: oklch(0.65 0.25 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.78 0.18 200 / 25%);
+  --input: oklch(0.18 0.02 220);
+  --ring: oklch(0.78 0.18 200);
+  --chart-1: oklch(0.78 0.18 200);
+  --chart-2: oklch(0.72 0.22 145);
+  --chart-3: oklch(0.70 0.20 60);
+  --chart-4: oklch(0.65 0.25 25);
+  --chart-5: oklch(0.60 0.20 300);
+  --sidebar: oklch(0.10 0.01 220);
+  --sidebar-foreground: oklch(0.95 0.02 200);
+  --sidebar-primary: oklch(0.78 0.18 200);
+  --sidebar-primary-foreground: oklch(0.08 0.01 220);
+  --sidebar-accent: oklch(0.18 0.02 220);
+  --sidebar-accent-foreground: oklch(0.85 0.02 200);
+  --sidebar-border: oklch(0.78 0.18 200 / 20%);
+  --sidebar-ring: oklch(0.78 0.18 200);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  /* HUD Panel — translucent glass with cyan border */
+  .hud-panel {
+    background: rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(0, 229, 255, 0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 6px;
+  }
+
+  /* Neon glow text */
+  .text-cyan-glow {
+    color: #00e5ff;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.8), 0 0 20px rgba(0, 229, 255, 0.4);
+  }
+
+  .text-green-glow {
+    color: #39ff14;
+    text-shadow: 0 0 8px rgba(57, 255, 20, 0.8), 0 0 20px rgba(57, 255, 20, 0.4);
+  }
+
+  .text-amber-glow {
+    color: #ff9800;
+    text-shadow: 0 0 8px rgba(255, 152, 0, 0.8), 0 0 20px rgba(255, 152, 0, 0.4);
+  }
+
+  .text-red-glow {
+    color: #ff1744;
+    text-shadow: 0 0 8px rgba(255, 23, 68, 0.8), 0 0 20px rgba(255, 23, 68, 0.4);
+  }
+
+  /* Neon border glow */
+  .border-cyan-glow {
+    border-color: #00e5ff;
+    box-shadow: 0 0 8px rgba(0, 229, 255, 0.5), inset 0 0 8px rgba(0, 229, 255, 0.1);
+  }
+
+  .border-green-glow {
+    border-color: #39ff14;
+    box-shadow: 0 0 8px rgba(57, 255, 20, 0.5), inset 0 0 8px rgba(57, 255, 20, 0.1);
+  }
+
+  /* AR corner bracket */
+  .ar-bracket {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: #00e5ff;
+    border-style: solid;
+    box-shadow: 0 0 6px rgba(0, 229, 255, 0.8);
+  }
+
+  .ar-bracket-tl {
+    top: 0; left: 0;
+    border-width: 2px 0 0 2px;
+  }
+
+  .ar-bracket-tr {
+    top: 0; right: 0;
+    border-width: 2px 2px 0 0;
+  }
+
+  .ar-bracket-bl {
+    bottom: 0; left: 0;
+    border-width: 0 0 2px 2px;
+  }
+
+  .ar-bracket-br {
+    bottom: 0; right: 0;
+    border-width: 0 2px 2px 0;
+  }
+
+  /* Scan line animation */
+  .scan-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.6), transparent);
+    animation: scanSweep 3s linear infinite;
+    pointer-events: none;
+  }
+
+  /* Pulsing LED dot */
+  .led-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .led-green {
+    background: #39ff14;
+    box-shadow: 0 0 6px #39ff14, 0 0 12px rgba(57, 255, 20, 0.5);
+    animation: ledPulse 2s ease-in-out infinite;
+  }
+
+  .led-amber {
+    background: #ff9800;
+    box-shadow: 0 0 6px #ff9800, 0 0 12px rgba(255, 152, 0, 0.5);
+    animation: ledPulse 1s ease-in-out infinite;
+  }
+
+  .led-red {
+    background: #ff1744;
+    box-shadow: 0 0 6px #ff1744, 0 0 12px rgba(255, 23, 68, 0.5);
+    animation: ledBlink 0.5s ease-in-out infinite;
+  }
+
+  .led-off {
+    background: #333;
+    box-shadow: none;
+  }
+
+  /* Mono text for terminal data */
+  .font-mono-terminal {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  }
+
+  /* iPhone frame */
+  .iphone-frame {
+    position: relative;
+    width: 393px;
+    height: 852px;
+    max-width: 100vw;
+    max-height: 100dvh;
+  }
+
+  /* Waveform bars */
+  .waveform-bar {
+    width: 3px;
+    background: #00e5ff;
+    border-radius: 2px;
+    box-shadow: 0 0 4px rgba(0, 229, 255, 0.6);
+    animation: waveformPulse 0.8s ease-in-out infinite;
+  }
+
+  /* Step indicator */
+  .step-badge {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+}
+
+/* Keyframe animations */
+@keyframes scanSweep {
+  0% { top: 0%; opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes ledPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes ledBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.1; }
+}
+
+@keyframes waveformPulse {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes arBracketIn {
+  from { opacity: 0; transform: scale(1.3); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes rippleOut {
+  0% { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(0, 229, 255, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.8), 0 0 40px rgba(0, 229, 255, 0.3); }
+}
+
+@keyframes slideInBottom {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes typewriterCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes connectingPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
