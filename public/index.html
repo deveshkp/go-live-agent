@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="description" content="Go-live – your real-time AI pocket handyman" />
+  <title>Go-live</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Camera feed (full-screen background) -->
+  <video id="camera" autoplay playsinline muted></video>
+
+  <!-- Canvas used for frame capture (hidden) -->
+  <canvas id="capture-canvas" aria-hidden="true"></canvas>
+
+  <!-- Header -->
+  <header class="header">
+    <span class="logo">🔧 Go-live</span>
+    <span id="status-badge" class="badge badge--idle" aria-live="polite">Idle</span>
+  </header>
+
+  <!-- Microphone permission / start button -->
+  <div id="start-overlay" class="overlay" role="dialog" aria-modal="true" aria-label="Start Go-live">
+    <div class="overlay__card">
+      <h1>🔧 Go-live</h1>
+      <p>Your real-time AI pocket handyman.</p>
+      <p class="hint">Point your camera at a home issue, then say<br><strong>"Hey Go-live"</strong> to get step-by-step guidance.</p>
+      <button id="start-btn" class="btn btn--primary">Start Go-live</button>
+    </div>
+  </div>
+
+  <!-- Guidance panel (slides up) -->
+  <section id="guidance-panel" class="panel panel--hidden" aria-live="polite" aria-label="AI guidance">
+    <div class="panel__inner">
+      <div class="panel__header">
+        <span class="panel__title">Go-live says…</span>
+        <button id="close-panel-btn" class="btn btn--icon" aria-label="Close guidance">✕</button>
+      </div>
+      <div id="guidance-text" class="panel__body"></div>
+      <div class="panel__actions">
+        <button id="speak-btn" class="btn btn--secondary">🔊 Read aloud</button>
+        <button id="new-scan-btn" class="btn btn--primary">📷 New scan</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Capture button (shown when listening) -->
+  <div id="capture-controls" class="capture-controls capture-controls--hidden">
+    <button id="manual-capture-btn" class="capture-btn" aria-label="Capture and analyse">
+      <span class="capture-btn__ring"></span>
+      <span class="capture-btn__dot"></span>
+    </button>
+    <p class="capture-hint">Say <strong>"Hey Go-live"</strong> or tap to scan</p>
+  </div>
+
+  <!-- Loading spinner -->
+  <div id="loading-overlay" class="loading-overlay loading-overlay--hidden" aria-live="assertive">
+    <div class="spinner"></div>
+    <p>Analysing…</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
