@@ -65,6 +65,15 @@ pnpm dev
 
 ---
 
+## ☁️ Deployment
+
+This project uses **Google Cloud Build** for CI/CD and **Cloud Run** for serverless hosting. The deployment is fully automated via configuration files.
+
+-   **Cloud Build Config**: [`cloudbuild.yaml`](cloudbuild.yaml) handles the build pipeline (Docker build → Push to GCR → Deploy to Cloud Run).
+-   **Deployment Script**: [`deploy.sh`](deploy.sh) is a shell script wrapper to trigger the build and deployment process.
+
+---
+
 ## 🏗️ Technology Stack
 
 -   **Frontend**: React, Vite, TailwindCSS
