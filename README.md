@@ -14,7 +14,7 @@
 
 To test the application, you will need to bypass the security gate:
 
-1.  **System Access Passcode:** `golive` (all lowercase)
+1.  **System Access:** `golive` 
 2.  **Gemini API Key:** You will be prompted to enter your own Google Gemini API Key.
     *   *Need a key? Get one here: [Google AI Studio](https://aistudio.google.com/app/apikey)*
 
@@ -72,3 +72,78 @@ pnpm dev
 -   **SDK**: Google GenAI SDK (`@google/genai`)
 -   **Infrastructure**: Google Cloud Run, Cloud Build
 -   **Real-time Interaction**: WebSocket-based audio/video streaming
+
+---
+
+## 📐 Architecture
+
+```mermaid
+graph TD
+    subgraph "User Environment"
+        Browser[User Browser <br/>(React Application)]
+        Microphone
+        Camera
+        LocalStorage[(Local Storage <br/> API Key)]
+    end
+
+    subgraph "Google Cloud Platform"
+        CloudRun[Cloud Run Service <br/> (Node.js/Express)]
+    end
+
+    subgraph "Google AI Services"
+        GeminiAPI[Google Gemini Live API]
+        GeminiModel[Gemini 2.0 Flash]
+    end
+
+    Browser -->|1. Load App| CloudRun
+    CloudRun -->|2. Serve Static Assets| Browser
+    
+    Browser -->|3. Retrieve stored API Key| LocalStorage
+    Browser -->|4. Establish WebSocket| GeminiAPI
+    
+    Microphone -->|Capture PCM Audio (16kHz)| Browser
+    Camera -->|Capture Video Frames (JPEG)| Browser
+    
+    Browser -->|5. Stream Audio/Video| GeminiAPI
+    GeminiAPI -.->|Process Multimodal Input| GeminiModel
+    GeminiAPI -->|6. Stream Audio Response (24kHz)| Browser
+```
+
+### 🔄 Interaction Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant B as Browser (Client)
+    participant S as Cloud Run (Server)
+    participant G as Gemini Live API
+
+    %% Initialization
+    U->>B: Access App (URL)
+    B->>S: Request Static Assets
+    S-->>B: Return React App
+    
+    %% Session Start
+    U->>B: Enter Passcode & API Key
+    U->>B: Click "Start Session"
+    B->>G: WebSocket Handshake (wss:// generativelanguage...)
+    G-->>B: Connection Established
+    
+    %% Real-time Loop
+    loop 1 FPS Video / 16kHz Audio
+        B->>B: Capture Camera Frame (JPEG)
+        B->>B: Capture Mic Audio (PCM)
+        B->>G: Send RealtimeInput (Video/Audio)
+        
+        alt Agent Speaking
+            G->>B: Stream Audio Response (PCM 24kHz)
+            B->>U: Play Audio
+        else System Event
+            G->>B: Send TurnComplete / Interrupted
+        end
+    end
+
+    %% Termination
+    U->>B: Click "End Session"
+    B->>G: Close WebSocket
+```
